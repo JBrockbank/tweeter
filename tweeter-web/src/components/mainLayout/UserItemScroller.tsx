@@ -4,8 +4,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import UserItem from "../userItem/UserItem";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
-import { UserItemPresenter, UserItemView } from "../../presenters/UserItemPresenter";
-
+import {
+  UserItemPresenter,
+  UserItemView,
+} from "../../presenters/UserItemPresenter";
 
 interface Props {
   presenterGenerator: (view: UserItemView) => UserItemPresenter;
@@ -18,7 +20,6 @@ const UserItemScroller = (props: Props) => {
 
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
 
-
   const { displayedUser, authToken } = useUserInfo();
 
   // Initialize the component whenever the displayed user changes
@@ -28,33 +29,31 @@ const UserItemScroller = (props: Props) => {
 
   // Load initial items whenever the displayed user changes. Done in a separate useEffect hook so the changes from reset will be visible.
   useEffect(() => {
-    if(changedDisplayedUser) {
+    if (changedDisplayedUser) {
       loadMoreItems();
     }
   }, [changedDisplayedUser]);
 
   // Add new items whenever there are new items to add
   useEffect(() => {
-    if(newItems) {
+    if (newItems) {
       setItems([...items, ...newItems]);
     }
-  }, [newItems])
+  }, [newItems]);
 
   const reset = async () => {
     setItems([]);
     setNewItems([]);
 
-    
     setChangedDisplayedUser(true);
 
     presenter.reset();
-  }
+  };
 
   const listener: UserItemView = {
-    addItems: (newItems: User[]) =>
-      setNewItems(newItems),
-    displayErrorMessage: displayErrorMessage
-  }
+    addItems: (newItems: User[]) => setNewItems(newItems),
+    displayErrorMessage: displayErrorMessage,
+  };
 
   const [presenter] = useState(props.presenterGenerator(listener));
 
@@ -62,7 +61,6 @@ const UserItemScroller = (props: Props) => {
     presenter.loadMoreItems(authToken!, displayedUser!.alias);
     setChangedDisplayedUser(false);
   };
-
 
   return (
     <div className="container px-0 overflow-visible vh-100">
