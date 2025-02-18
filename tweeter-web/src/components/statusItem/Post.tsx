@@ -9,7 +9,6 @@ interface Props {
 const Post = (props: Props) => {
   const { navigateToUser } = useUserNavigationHook();
 
-
   return (
     <>
       {props.status.segments.map((segment, index) =>

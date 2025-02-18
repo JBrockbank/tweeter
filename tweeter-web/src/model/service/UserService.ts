@@ -41,7 +41,7 @@ export class UserService {
   public async logout(authToken: AuthToken): Promise<void> {
     // Pause so we can see the logging out message. Delete when the call to the server is implemented.
     await new Promise((res) => setTimeout(res, 1000));
-  };
+  }
 
   public async getUser(
     authToken: AuthToken,
@@ -49,7 +49,7 @@ export class UserService {
   ): Promise<User | null> {
     // TODO: Replace with the result of calling server
     return FakeData.instance.findUserByAlias(alias);
-  };
+  }
 
   public async getIsFollowerStatus(
     authToken: AuthToken,
@@ -100,8 +100,14 @@ export class UserService {
 
     // TODO: Call the server
 
-    const followerCount = await this.getFollowerCount(authToken, userToUnfollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToUnfollow);
+    const followerCount = await this.getFollowerCount(
+      authToken,
+      userToUnfollow
+    );
+    const followeeCount = await this.getFolloweeCount(
+      authToken,
+      userToUnfollow
+    );
 
     return [followerCount, followeeCount];
   }

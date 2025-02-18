@@ -18,12 +18,10 @@ const AppNavbar = () => {
     displayInfoMessage: displayInfoMessage,
     clearLastInfoMessage: clearLastInfoMessage,
     clearUserInfo: clearUserInfo,
-    displayErrorMessage: displayErrorMessage
+    displayErrorMessage: displayErrorMessage,
   };
 
   const [presenter] = useState(() => new NavBarPresenter(listener));
-
-
 
   return (
     <Navbar
@@ -64,7 +62,11 @@ const AppNavbar = () => {
               <NavLink to="/followers">Followers</NavLink>
             </Nav.Item>
             <Nav.Item>
-              <NavLink id="logout" onClick={(event) => presenter.logOut(authToken!)} to={location.pathname}>
+              <NavLink
+                id="logout"
+                onClick={(event) => presenter.logOut(authToken!)}
+                to={location.pathname}
+              >
                 Logout
               </NavLink>
             </Nav.Item>
