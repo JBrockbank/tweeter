@@ -3,14 +3,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "./UserInfoHook";
-import { UserInfoView, UserInfoPresenter } from "../../presenters/UserInfoPresenter";
+import { UserInfoPresenter } from "../../presenters/UserInfoPresenter";
+import { MessageView } from "../../presenters/Presenter";
 interface Props {
-  presenterGenerator: (view: UserInfoView) => UserInfoPresenter;
+  presenterGenerator: (view: MessageView) => UserInfoPresenter;
 }
 
 const UserInfo = (props: Props) => {
-
-
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
@@ -27,7 +26,7 @@ const UserInfo = (props: Props) => {
     presenter.setNumbFollowers(authToken!, displayedUser!);
   }, [displayedUser]);
 
-  const listener: UserInfoView = {
+  const listener: MessageView = {
     displayErrorMessage: displayErrorMessage,
     displayInfoMessage: displayInfoMessage,
     clearLastInfoMessage: clearLastInfoMessage,
@@ -39,7 +38,6 @@ const UserInfo = (props: Props) => {
     event.preventDefault();
     setDisplayedUser(currentUser!);
   };
-
 
   return (
     <div className={presenter.isLoading ? "loading" : ""}>
@@ -75,7 +73,8 @@ const UserInfo = (props: Props) => {
               <br />
               {presenter.followeeCount > -1 && presenter.followerCount > -1 && (
                 <div>
-                  Followees: {presenter.followeeCount} Followers: {presenter.followerCount}
+                  Followees: {presenter.followeeCount} Followers:{" "}
+                  {presenter.followerCount}
                 </div>
               )}
             </div>
@@ -88,7 +87,13 @@ const UserInfo = (props: Props) => {
                       className="btn btn-md btn-secondary me-1"
                       type="submit"
                       style={{ width: "6em" }}
-                      onClick={(event) => presenter.unfollowDisplayedUser(event, authToken!, displayedUser!)}
+                      onClick={(event) =>
+                        presenter.unfollowDisplayedUser(
+                          event,
+                          authToken!,
+                          displayedUser!
+                        )
+                      }
                     >
                       {presenter.isLoading ? (
                         <span
@@ -106,7 +111,13 @@ const UserInfo = (props: Props) => {
                       className="btn btn-md btn-primary me-1"
                       type="submit"
                       style={{ width: "6em" }}
-                      onClick={(event) => presenter.followDisplayedUser(event, authToken!, displayedUser!)}
+                      onClick={(event) =>
+                        presenter.followDisplayedUser(
+                          event,
+                          authToken!,
+                          displayedUser!
+                        )
+                      }
                     >
                       {presenter.isLoading ? (
                         <span

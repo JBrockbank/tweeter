@@ -7,10 +7,8 @@ import {
   PostStatusView,
   PostStatusPresenter,
 } from "../../presenters/PostStatusPresenter";
-import {
-  UserInfoPresenter,
-  UserInfoView,
-} from "../../presenters/UserInfoPresenter";
+import { UserInfoPresenter } from "../../presenters/UserInfoPresenter";
+import { MessageView } from "../../presenters/Presenter";
 
 const MainLayout = () => {
   return (
@@ -22,7 +20,7 @@ const MainLayout = () => {
             <div className="row gy-4">
               <div className="p-3 mb-4 border rounded bg-light">
                 <UserInfo
-                  presenterGenerator={(view: UserInfoView) =>
+                  presenterGenerator={(view: MessageView) =>
                     new UserInfoPresenter(view)
                   }
                 />
