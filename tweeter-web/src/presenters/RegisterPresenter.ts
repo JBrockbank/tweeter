@@ -1,5 +1,4 @@
 import { ChangeEvent } from "react";
-import { UserService } from "../model/service/UserService";
 import { AuthPresenter, AuthView } from "./AuthPresenter";
 import { Buffer } from "buffer";
 
@@ -10,12 +9,9 @@ export interface RegisterView extends AuthView {
 }
 
 export class RegisterPresenter extends AuthPresenter<RegisterView> {
-  public isLoading = false;
-  private userService: UserService;
 
   public constructor(view: RegisterView) {
     super(view);
-    this.userService = new UserService();
   }
 
   public async doRegister(
@@ -26,29 +22,51 @@ export class RegisterPresenter extends AuthPresenter<RegisterView> {
     imageBytes: Uint8Array,
     imageFileExtension: string,
     rememberMe: boolean
-  ) {
-    try {
-      this.isLoading = true;
-
-      const [user, authToken] = await this.userService.register(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageBytes,
-        imageFileExtension
-      );
-
-      this.view.updateUserInfo(user, user, authToken, rememberMe);
-      this.view.navigate("/");
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`
-      );
-    } finally {
-      this.isLoading = false;
-    }
+  ): Promise<void> {
+    this.authOperation(
+      () =>
+        this.userService.register(
+          firstName,
+          lastName,
+          alias,
+          password,
+          imageBytes,
+          imageFileExtension
+        ),
+      "register user",
+      rememberMe
+    );
   }
+  // public async doRegister(
+  //   firstName: string,
+  //   lastName: string,
+  //   alias: string,
+  //   password: string,
+  //   imageBytes: Uint8Array,
+  //   imageFileExtension: string,
+  //   rememberMe: boolean
+  // ) {
+  //   this.doFailureRecordingOperation(
+  //     async () => {
+  //       this.isLoading = true;
+  //       const [user, authToken] = await this.userService.register(
+  //         firstName,
+  //         lastName,
+  //         alias,
+  //         password,
+  //         imageBytes,
+  //         imageFileExtension
+  //       );
+
+  //       this.view.updateUserInfo(user, user, authToken, rememberMe);
+  //       this.view.navigate("/");
+  //     },
+  //     "register user",
+  //     () => {
+  //       this.isLoading = false;
+  //     }
+  //   );
+  // }
 
   public handleImageFile(file: File | undefined) {
     if (file) {

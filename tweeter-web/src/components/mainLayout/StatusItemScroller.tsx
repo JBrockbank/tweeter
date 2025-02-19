@@ -5,12 +5,12 @@ import useToastListener from "../toaster/ToastListenerHook";
 import StatusItem from "../statusItem/statusItem";
 import useUserInfo from "../userInfo/UserInfoHook";
 import {
-  StatusItemPresenter,
-  StatusItemView,
+  StatusItemPresenter
 } from "../../presenters/StatusItemPresenter";
+import { ItemView } from "../../presenters/ItemPresenter";
 
 interface Props {
-  presenterGenerator: (view: StatusItemView) => StatusItemPresenter;
+  presenterGenerator: (view: ItemView<Status>) => StatusItemPresenter;
 }
 
 const StatusItemScroller = (props: Props) => {
@@ -47,7 +47,7 @@ const StatusItemScroller = (props: Props) => {
     presenter.reset();
   };
 
-  const listener: StatusItemView = {
+  const listener: ItemView<Status> = {
     addItems: (newItems: Status[]) => setNewItems(newItems),
     displayErrorMessage: displayErrorMessage,
   };
