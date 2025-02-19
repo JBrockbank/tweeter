@@ -15,7 +15,7 @@ import { FolloweePresenter } from "./presenters/FolloweePresenter";
 import { FollowerPresenter } from "./presenters/FollowerPresenter";
 import { FeedPresenter } from "./presenters/FeedPresenter";
 import { StoryPresenter } from "./presenters/StoryPresenter";
-import { LoginPresenter, LoginView } from "./presenters/LoginPresenter";
+import { LoginPresenter } from "./presenters/LoginPresenter";
 import {
   RegisterPresenter,
   RegisterView,
@@ -25,6 +25,7 @@ import { ItemView } from "./presenters/ItemPresenter";
 import StatusItem from "./components/statusItem/statusItem";
 import ItemScroller from "./components/mainLayout/ItemScroller";
 import UserItem from "./components/userItem/UserItem";
+import { AuthView } from "./presenters/AuthPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -120,7 +121,7 @@ const UnauthenticatedRoutes = () => {
         path="/login"
         element={
           <Login
-            presenterGenerator={(view: LoginView) => new LoginPresenter(view)}
+            presenterGenerator={(view: AuthView) => new LoginPresenter(view)}
           />
         }
       />
@@ -138,7 +139,7 @@ const UnauthenticatedRoutes = () => {
         path="*"
         element={
           <Login
-            presenterGenerator={(view: LoginView) => new LoginPresenter(view)}
+            presenterGenerator={(view: AuthView) => new LoginPresenter(view)}
           />
         }
       />

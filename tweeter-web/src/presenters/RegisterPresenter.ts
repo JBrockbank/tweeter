@@ -36,36 +36,6 @@ export class RegisterPresenter extends AuthPresenter<RegisterView> {
       rememberMe
     );
   }
-  // public async doRegister(
-  //   firstName: string,
-  //   lastName: string,
-  //   alias: string,
-  //   password: string,
-  //   imageBytes: Uint8Array,
-  //   imageFileExtension: string,
-  //   rememberMe: boolean
-  // ) {
-  //   this.doFailureRecordingOperation(
-  //     async () => {
-  //       this.isLoading = true;
-  //       const [user, authToken] = await this.userService.register(
-  //         firstName,
-  //         lastName,
-  //         alias,
-  //         password,
-  //         imageBytes,
-  //         imageFileExtension
-  //       );
-
-  //       this.view.updateUserInfo(user, user, authToken, rememberMe);
-  //       this.view.navigate("/");
-  //     },
-  //     "register user",
-  //     () => {
-  //       this.isLoading = false;
-  //     }
-  //   );
-  // }
 
   public handleImageFile(file: File | undefined) {
     if (file) {
