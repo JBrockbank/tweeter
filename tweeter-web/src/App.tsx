@@ -60,7 +60,9 @@ const AuthenticatedRoutes = () => {
               presenterGenerator={(view: ItemView<Status>) =>
                 new FeedPresenter(view)
               }
-              itemComponentGenerator={(item: Status) => <StatusItem status={item} />}
+              itemComponentGenerator={(item: Status) => (
+                <StatusItem status={item} />
+              )}
             />
           }
         />
@@ -72,7 +74,9 @@ const AuthenticatedRoutes = () => {
               presenterGenerator={(view: ItemView<Status>) =>
                 new StoryPresenter(view)
               }
-              itemComponentGenerator={(item: Status) => <StatusItem status={item} />}
+              itemComponentGenerator={(item: Status) => (
+                <StatusItem status={item} />
+              )}
             />
           }
         />

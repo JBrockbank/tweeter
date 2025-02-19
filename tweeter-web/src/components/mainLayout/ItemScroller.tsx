@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
 import { ItemPresenter, ItemView } from "../../presenters/ItemPresenter";
@@ -6,7 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 interface Props<V, U extends ItemView<V>, S> {
   presenterGenerator: (view: ItemView<V>) => ItemPresenter<V, U, S>;
-  itemComponentGenerator: (item: V) => ReactNode;
+  itemComponentGenerator: (item: V) => JSX.Element;
 }
 
 export const ItemScroller = <V, U extends ItemView<V>, S>(
