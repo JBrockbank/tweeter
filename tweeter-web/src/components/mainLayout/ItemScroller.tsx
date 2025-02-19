@@ -1,22 +1,22 @@
-import { User } from "tweeter-shared";
-import { useState, useEffect } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import UserItem from "../userItem/UserItem";
+import React, { ReactNode, useEffect, useState } from "react";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
-import { UserItemPresenter } from "../../presenters/UserItemPresenter";
-import { ItemView } from "../../presenters/ItemPresenter";
+import { ItemPresenter, ItemView } from "../../presenters/ItemPresenter";
+import InfiniteScroll from "react-infinite-scroll-component";
 
-interface Props {
-  presenterGenerator: (view: ItemView<User>) => UserItemPresenter;
+interface Props<V, U extends ItemView<V>, S> {
+  presenterGenerator: (view: ItemView<V>) => ItemPresenter<V, U, S>;
+  itemComponentGenerator: (item: V) => ReactNode;
 }
 
-const UserItemScroller = (props: Props) => {
+export const ItemScroller = <V, U extends ItemView<V>, S>(
+  props: Props<V, U, S>
+) => {
   const { displayErrorMessage } = useToastListener();
-  const [items, setItems] = useState<User[]>([]);
-  const [newItems, setNewItems] = useState<User[]>([]);
-
+  const [items, setItems] = useState<V[]>([]);
+  const [newItems, setNewItems] = useState<V[]>([]);
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
+  const { presenterGenerator, itemComponentGenerator } = props;
 
   const { displayedUser, authToken } = useUserInfo();
 
@@ -42,18 +42,16 @@ const UserItemScroller = (props: Props) => {
   const reset = async () => {
     setItems([]);
     setNewItems([]);
-
     setChangedDisplayedUser(true);
-
     presenter.reset();
   };
 
-  const listener: ItemView<User> = {
-    addItems: (newItems: User[]) => setNewItems(newItems),
+  const listener: ItemView<V> = {
+    addItems: (newItems: V[]) => setNewItems(newItems),
     displayErrorMessage: displayErrorMessage,
   };
 
-  const [presenter] = useState(props.presenterGenerator(listener));
+  const [presenter] = useState(presenterGenerator(listener));
 
   const loadMoreItems = async () => {
     presenter.loadMoreItems(authToken!, displayedUser!.alias);
@@ -74,7 +72,7 @@ const UserItemScroller = (props: Props) => {
             key={index}
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
-            <UserItem value={item} />
+            {itemComponentGenerator(item)}
           </div>
         ))}
       </InfiniteScroll>
@@ -82,4 +80,4 @@ const UserItemScroller = (props: Props) => {
   );
 };
 
-export default UserItemScroller;
+export default ItemScroller;
