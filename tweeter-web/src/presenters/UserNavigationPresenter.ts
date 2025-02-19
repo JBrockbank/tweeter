@@ -7,7 +7,7 @@ export interface UserNavigationView extends View {
   displayErrorMessage(message: string): void;
 }
 
-export class UserNavigationPresenter extends Presenter<UserNavigationView>{
+export class UserNavigationPresenter extends Presenter<UserNavigationView> {
   private userService: UserService;
 
   public constructor(view: UserNavigationView) {
@@ -21,22 +21,19 @@ export class UserNavigationPresenter extends Presenter<UserNavigationView>{
     currentUser: User
   ): Promise<void> {
     event.preventDefault();
-    this.doFailureRecordingOperation(
-      async () => {
-        const alias = this.extractAlias(event.target.toString());
+    this.doFailureRecordingOperation(async () => {
+      const alias = this.extractAlias(event.target.toString());
 
-        const user = await this.userService.getUser(authToken!, alias);
-  
-        if (!!user) {
-          if (currentUser!.equals(user)) {
-            this.view.setDisplayedUser(currentUser!);
-          } else {
-            this.view.setDisplayedUser(user);
-          }
+      const user = await this.userService.getUser(authToken!, alias);
+
+      if (!!user) {
+        if (currentUser!.equals(user)) {
+          this.view.setDisplayedUser(currentUser!);
+        } else {
+          this.view.setDisplayedUser(user);
         }
-      },
-      "get user"
-    );
+      }
+    }, "get user");
   }
 
   public extractAlias(value: string): string {

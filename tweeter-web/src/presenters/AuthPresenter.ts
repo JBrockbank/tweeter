@@ -52,6 +52,4 @@ export abstract class AuthPresenter<T extends AuthView> extends Presenter<T> {
       }
     );
   }
-
-
 }

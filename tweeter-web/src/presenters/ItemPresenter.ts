@@ -2,7 +2,6 @@ import { AuthToken } from "tweeter-shared";
 import { Presenter, View } from "./Presenter";
 export const PAGE_SIZE = 10;
 
-
 export interface ItemView<T> extends View {
   addItems: (items: T[]) => void;
 }
@@ -50,18 +49,17 @@ export abstract class ItemPresenter<
 
   public async loadMoreItems(authToken: AuthToken, userAlias: string) {
     this.doFailureRecordingOperation(async () => {
-      const [newItems, hasMore] = await this.getMoreItems(
-        authToken,
-        userAlias,
-      );
+      const [newItems, hasMore] = await this.getMoreItems(authToken, userAlias);
       this.hasMoreItems = hasMore;
       this.lastItem = newItems[newItems.length - 1];
       this.view.addItems(newItems);
     }, this.getItemDescription());
   }
 
-  protected abstract getMoreItems(authToken: AuthToken, userAlias: string): Promise<[T[], boolean]>;
+  protected abstract getMoreItems(
+    authToken: AuthToken,
+    userAlias: string
+  ): Promise<[T[], boolean]>;
 
   protected abstract getItemDescription(): string;
-
 }

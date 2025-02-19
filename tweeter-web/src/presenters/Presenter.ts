@@ -30,9 +30,9 @@ export class Presenter<T extends View> {
         `Failed to ${operationDescription} because of exception: ${error}`
       );
     } finally {
-        if (finalOperation) {
-            finalOperation();
-        }
+      if (finalOperation) {
+        finalOperation();
+      }
     }
   }
 }

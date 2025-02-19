@@ -18,7 +18,10 @@ import { FollowerPresenter } from "./presenters/FollowerPresenter";
 import { FeedPresenter } from "./presenters/FeedPresenter";
 import { StoryPresenter } from "./presenters/StoryPresenter";
 import { LoginPresenter, LoginView } from "./presenters/LoginPresenter";
-import { RegisterPresenter, RegisterView } from "./presenters/RegisterPresenter";
+import {
+  RegisterPresenter,
+  RegisterView,
+} from "./presenters/RegisterPresenter";
 import { Status, User } from "tweeter-shared";
 import { ItemView } from "./presenters/ItemPresenter";
 
@@ -104,9 +107,32 @@ const UnauthenticatedRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/login" element={<Login presenterGenerator={(view: LoginView) => new LoginPresenter(view)}/>} />
-      <Route path="/register" element={<Register presenterGenerator={(view: RegisterView) => new RegisterPresenter(view)}/>} />
-      <Route path="*" element={<Login presenterGenerator={(view: LoginView) => new LoginPresenter(view)}  />} />
+      <Route
+        path="/login"
+        element={
+          <Login
+            presenterGenerator={(view: LoginView) => new LoginPresenter(view)}
+          />
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <Register
+            presenterGenerator={(view: RegisterView) =>
+              new RegisterPresenter(view)
+            }
+          />
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <Login
+            presenterGenerator={(view: LoginView) => new LoginPresenter(view)}
+          />
+        }
+      />
     </Routes>
   );
 };

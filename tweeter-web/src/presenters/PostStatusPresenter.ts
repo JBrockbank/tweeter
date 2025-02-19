@@ -26,17 +26,22 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
     this.statusService = new StatusService();
   }
 
-  public async submitPost(event: React.MouseEvent, authToken: AuthToken, currentUser: User | null, post: string) {
+  public async submitPost(
+    event: React.MouseEvent,
+    authToken: AuthToken,
+    currentUser: User | null,
+    post: string
+  ) {
     event.preventDefault();
     this.doFailureRecordingOperation(
       async () => {
         this._isLoading = true;
         this.view.displayInfoMessage("Posting status...", 0);
-  
+
         const status = new Status(post, currentUser!, Date.now());
-  
+
         await this.statusService.postStatus(authToken!, status);
-  
+
         this.view.setPost("");
         this.view.displayInfoMessage("Status posted!", 2000);
       },
@@ -44,11 +49,12 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
       () => {
         this.view.clearLastInfoMessage();
         this._isLoading = false;
-      });
+      }
+    );
   }
 
   public clearPost(event: React.MouseEvent) {
     event.preventDefault();
     this.view.setPost("");
-  };
+  }
 }

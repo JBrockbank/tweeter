@@ -4,9 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import UserItem from "../userItem/UserItem";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
-import {
-  UserItemPresenter
-} from "../../presenters/UserItemPresenter";
+import { UserItemPresenter } from "../../presenters/UserItemPresenter";
 import { ItemView } from "../../presenters/ItemPresenter";
 
 interface Props {
