@@ -7,11 +7,15 @@ export interface NavBarView extends MessageView {
 }
 
 export class NavBarPresenter extends Presenter<NavBarView> {
-  private userService: UserService;
+  private _userService: UserService;
 
   public constructor(view: NavBarView) {
     super(view);
-    this.userService = new UserService();
+    this._userService = new UserService();
+  }
+
+  public get userService() {
+    return this._userService;
   }
 
   public async logOut(authToken: AuthToken) {

@@ -7,7 +7,7 @@ export interface PostStatusView extends MessageView {
 }
 
 export class PostStatusPresenter extends Presenter<PostStatusView> {
-  private statusService: any;
+  private _statusService: any;
   private _isLoading = false;
 
   public get isLoading() {
@@ -16,8 +16,12 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
 
   public constructor(view: PostStatusView) {
     super(view);
-    this.statusService = new StatusService();
+    this._statusService = new StatusService();
   }
+
+  public get statusService() {
+    return this._statusService;
+  }  
 
   public async submitPost(
     event: React.MouseEvent,
@@ -26,7 +30,7 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
     post: string
   ) {
     event.preventDefault();
-    this.doFailureRecordingOperation(
+    await this.doFailureRecordingOperation(
       async () => {
         this._isLoading = true;
         this.view.displayInfoMessage("Posting status...", 0);

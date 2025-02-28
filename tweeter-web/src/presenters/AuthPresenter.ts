@@ -1,7 +1,7 @@
 import { User, AuthToken } from "tweeter-shared";
 import { Presenter, View } from "./Presenter";
 import { UserService } from "../model/service/UserService";
-
+ 
 export interface AuthView extends View {
   updateUserInfo: (
     user: User,
