@@ -38,6 +38,7 @@ const PostStatus = (props: Props) => {
           <textarea
             className="form-control"
             id="postStatusTextArea"
+            aria-label="postStatus"
             rows={10}
             placeholder="What's on your mind?"
             value={post}
@@ -50,6 +51,7 @@ const PostStatus = (props: Props) => {
           <button
             id="postStatusButton"
             className="btn btn-md btn-primary me-1"
+            aria-label="Post Status Button"
             type="button"
             disabled={checkButtonStatus()}
             style={{ width: "8em" }}

@@ -20,6 +20,7 @@ const AuthField = (props: Props) => {
           className="form-control"
           size={50}
           id="aliasInput"
+          aria-label="alias"
           placeholder="name@example.com"
           value={props.alias}
           onKeyDown={props.onEnterAction}
@@ -32,6 +33,7 @@ const AuthField = (props: Props) => {
           type="password"
           className="form-control"
           id="passwordInput"
+          aria-label="password"
           placeholder="Password"
           value={props.password}
           onKeyDown={props.onEnterAction}
