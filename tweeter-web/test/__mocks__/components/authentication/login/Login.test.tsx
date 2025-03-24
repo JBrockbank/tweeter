@@ -85,7 +85,7 @@ const renderLoginAndGetElement = (
 
   renderLogin(orignalUrl, presenter);
 
-//   screen.debug();
+  //   screen.debug();
 
   const signInButton = screen.getByRole("button", { name: /Sign in/i });
   const aliasField = screen.getByLabelText("alias");
