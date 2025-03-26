@@ -1,9 +1,9 @@
 import { MemoryRouter } from "react-router-dom";
-import Login from "../../../../../src/components/authentication/login/Login";
+import Login from "../../../../src/components/authentication/login/Login";
 import { render, screen } from "@testing-library/react";
 import React from "react";
-import { LoginPresenter } from "../../../../../src/presenters/LoginPresenter";
-import { AuthView } from "../../../../../src/presenters/AuthPresenter";
+import { LoginPresenter } from "../../../../src/presenters/LoginPresenter";
+import { AuthView } from "../../../../src/presenters/AuthPresenter";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import { library } from "@fortawesome/fontawesome-svg-core";

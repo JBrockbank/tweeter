@@ -1,8 +1,8 @@
 import {
   PostStatusPresenter,
   PostStatusView,
-} from "../../../src/presenters/PostStatusPresenter";
-import { StatusService } from "../../../src/model/service/StatusService";
+} from "../../src/presenters/PostStatusPresenter";
+import { StatusService } from "../../src/model/service/StatusService";
 import {
   anything,
   capture,

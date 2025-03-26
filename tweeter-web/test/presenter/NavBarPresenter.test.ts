@@ -2,7 +2,7 @@ import { AuthToken } from "tweeter-shared";
 import {
   NavBarPresenter,
   NavBarView,
-} from "../../../src/presenters/NavBarPresenter";
+} from "../../src/presenters/NavBarPresenter";
 import {
   anything,
   instance,
@@ -11,7 +11,7 @@ import {
   verify,
   when,
 } from "@typestrong/ts-mockito";
-import { UserService } from "../../../src/model/service/UserService";
+import { UserService } from "../../src/model/service/UserService";
 
 describe("NavBarPresenter", () => {
   let mockNavBarView: NavBarView;

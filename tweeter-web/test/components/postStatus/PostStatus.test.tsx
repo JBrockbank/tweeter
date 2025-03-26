@@ -1,18 +1,18 @@
 import { render, screen } from "@testing-library/react";
-import useUserInfo from "../../../../src/components/userInfo/UserInfoHook";
+import useUserInfo from "../../../src/components/userInfo/UserInfoHook";
 import { User, AuthToken } from "tweeter-shared";
-import PostStatus from "../../../../src/components/postStatus/PostStatus";
+import PostStatus from "../../../src/components/postStatus/PostStatus";
 import {
   PostStatusView,
   PostStatusPresenter,
-} from "../../../../src/presenters/PostStatusPresenter";
+} from "../../../src/presenters/PostStatusPresenter";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 import React from "react";
 import { anything, instance, mock, verify } from "@typestrong/ts-mockito";
 import "@testing-library/jest-dom";
 
-jest.mock("../../../../src/components/userInfo/UserInfoHook", () => ({
-  ...jest.requireActual("../../../../src/components/userInfo/UserInfoHook"),
+jest.mock("../../../src/components/userInfo/UserInfoHook", () => ({
+  ...jest.requireActual("../../../src/components/userInfo/UserInfoHook"),
   __esModule: true,
   default: jest.fn(),
 }));

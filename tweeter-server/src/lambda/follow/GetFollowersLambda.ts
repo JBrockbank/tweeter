@@ -4,5 +4,5 @@ import { GetItems } from "../GetItems";
 
 export const handler = async (request: PagedItemRequest<UserDto>): Promise<PagedItemResponse<UserDto>> => {
     const followService = new FollowService();
-    return GetItems<UserDto>(() => followService.loadMoreFollowers(request.token, request.alias, request.pageSize, request.lastItem));
+    return GetItems<UserDto>(() => followService.loadMoreFollowers(request.authToken, request.alias, request.pageSize, request.lastItem));
 }

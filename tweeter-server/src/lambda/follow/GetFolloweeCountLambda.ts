@@ -4,6 +4,6 @@ import { GetCount } from "./GetCount";
 
 export const handler = async (request: GetCountRequest): Promise<GetCountResponse> => {
     const followService = new FollowService();
-    return GetCount(() => followService.getFolloweeCount(request.token, request.user))
+    return GetCount(() => followService.getFolloweeCount(request.authToken, request.user))
 
 }

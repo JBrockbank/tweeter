@@ -5,7 +5,7 @@ export const handler = async (
     request: GetIsFollowerStatusRequest
 ): Promise<GetIsFollowerStatusResponse> => {
     const followService = new FollowService();
-    const isFollower = await followService.getIsFollowerStatus(request.token, request.user, request.selectedUser);
+    const isFollower = await followService.getIsFollowerStatus(request.authToken, request.user, request.selectedUser);
 
     return {
         successIndicator: true,

@@ -1,6 +1,6 @@
 import { UserDto } from "../../dto/UserDto";
+import { TweeterRequest } from "./TweeterRequest";
 
-export interface FollowActionRequest {
-    readonly token: string;
+export interface FollowActionRequest extends TweeterRequest {
     readonly user: UserDto;
 } 
