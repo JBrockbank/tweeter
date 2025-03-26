@@ -34,10 +34,14 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
       async () => {
         this._isLoading = true;
         this.view.displayInfoMessage("Posting status...", 0);
+        console.log("submitPost");
 
         const status = new Status(post, currentUser!, Date.now());
 
         await this.statusService.postStatus(authToken!, status);
+
+        console.log("Status Posted");
+
 
         this.view.setPost("");
         this.view.displayInfoMessage("Status posted!", 2000);

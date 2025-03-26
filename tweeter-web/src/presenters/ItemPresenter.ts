@@ -50,8 +50,18 @@ export abstract class ItemPresenter<
   public async loadMoreItems(authToken: AuthToken, userAlias: string) {
     this.doFailureRecordingOperation(async () => {
       const [newItems, hasMore] = await this.getMoreItems(authToken, userAlias);
+      console.log("newItems.length = " + newItems.length)
+      if (newItems.length > 0) {
+        this.lastItem = newItems[newItems.length - 1];
+      } else {
+        console.warn("No new items returned. lastItem remains unchanged.");
+      }      
+      console.log("ItemPresenter: loadMoreItems: lastItem = " + this.lastItem)
       this.hasMoreItems = hasMore;
+      console.log("ItemPresenter: loadMoreItems: hasMore = " + hasMore);
+      console.log("HERE")
       this.lastItem = newItems[newItems.length - 1];
+      console.log("ItemPresenter: loadMoreItems(After1): lastItem = " + this.lastItem)
       this.view.addItems(newItems);
     }, this.getItemDescription());
   }

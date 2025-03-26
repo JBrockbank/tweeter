@@ -49,7 +49,7 @@ export class ServerFacade {
       response.successIndicator && response.items
         ? response.items
             .map(mapToOutputItem)
-            .filter((item): item is TOutputItem => item !== null) // Filter out null values
+            .filter((item): item is TOutputItem => item !== null)
         : [];
 
     if (response.successIndicator) {
@@ -64,14 +64,19 @@ export class ServerFacade {
     authToken: string,
     alias: string,
     pageSize: number,
-    lastItem: UserDto | null
+    lastItem: User | null
   ): Promise<[User[], boolean]> {
+    var lastItemDto: UserDto | null = null;
+    if(lastItem){
+        lastItemDto = lastItem.dto;
+    }
     const req: PagedItemRequest<UserDto> = {
       authToken,
       alias,
       pageSize,
-      lastItem,
+      lastItem: lastItemDto,
     };
+    console.log("Server Facade getMoreFollowees() - lastItem: " + lastItem);
     return this.fetchPagedItems(req, "/followee/list", (dto: UserDto) =>
       User.fromDto(dto)
     );
@@ -81,13 +86,17 @@ export class ServerFacade {
     authToken: string,
     alias: string,
     pageSize: number,
-    lastItem: UserDto | null
+    lastItem: User | null
   ): Promise<[User[], boolean]> {
+    var lastItemDto: UserDto | null = null;
+    if(lastItem){
+        lastItemDto = lastItem.dto;
+    }
     const req: PagedItemRequest<UserDto> = {
       authToken,
       alias,
       pageSize,
-      lastItem,
+      lastItem: lastItemDto,
     };
     return this.fetchPagedItems(req, "/follower/list", (dto: UserDto) =>
       User.fromDto(dto)
@@ -98,13 +107,17 @@ export class ServerFacade {
     authToken: string,
     alias: string,
     pageSize: number,
-    lastItem: StatusDto | null
+    lastItem: Status | null
   ): Promise<[Status[], boolean]> {
+    var lastItemDto: StatusDto | null = null;
+    if(lastItem){
+        lastItemDto = lastItem.dto;
+    }
     const req: PagedItemRequest<StatusDto> = {
       authToken,
       alias,
       pageSize,
-      lastItem,
+      lastItem: lastItemDto,
     };
     return this.fetchPagedItems(req, "/statusItem/story", (dto: StatusDto) =>
       Status.fromDto(dto)
@@ -115,13 +128,17 @@ export class ServerFacade {
     authToken: string,
     alias: string,
     pageSize: number,
-    lastItem: StatusDto | null
+    lastItem: Status | null
   ): Promise<[Status[], boolean]> {
+    var lastItemDto: StatusDto | null = null;
+    if(lastItem){
+        lastItemDto = lastItem.dto;
+    }
     const req: PagedItemRequest<StatusDto> = {
       authToken,
       alias,
       pageSize,
-      lastItem,
+      lastItem: lastItemDto,
     };
     return this.fetchPagedItems(req, "/statusItem/feed", (dto: StatusDto) =>
       Status.fromDto(dto)
@@ -130,14 +147,16 @@ export class ServerFacade {
 
   public async getIsFollowerStatus(
     authToken: string,
-    user: UserDto,
-    selectedUser: UserDto
+    user: User,
+    selectedUser: User
   ): Promise<boolean> {
-    const request = { authToken, user, selectedUser };
+    var userDto = user.dto;
+    var selectedUserDto = selectedUser.dto;
+    const request = { authToken, user: userDto, selectedUser: selectedUserDto };
     const response = await this.clientCommunicator.doPost<
       GetIsFollowerStatusRequest,
       GetIsFollowerStatusResponse
-    >(request, "follower/status");
+    >(request, "/follower/status");
 
     if (response.successIndicator) {
       return response.isFollower;

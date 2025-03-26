@@ -21,6 +21,8 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
+    console.log("ClientSide FollowService loadMoreFollowees - lastItem: " + lastItem?.alias);
+    console.log("PageSize: " + pageSize);
     return await this.serverFacade.getMoreFollowees(authToken.token, userAlias, pageSize, lastItem);
   }
 
@@ -29,7 +31,7 @@ export class FollowService {
     user: User,
     selectedUser: User
   ): Promise<boolean> {
-    return await this.getIsFollowerStatus(authToken, user, selectedUser);
+    return await this.serverFacade.getIsFollowerStatus(authToken.token, user, selectedUser);
   }
 
   public async getFolloweeCount(

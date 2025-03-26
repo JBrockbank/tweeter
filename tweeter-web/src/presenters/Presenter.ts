@@ -24,8 +24,10 @@ export class Presenter<T extends View> {
     finalOperation?: () => void
   ) {
     try {
+      console.log("Trying");
       await operation();
     } catch (error) {
+      console.log("Caught Error")
       this.view.displayErrorMessage(
         `Failed to ${operationDescription} because of exception: ${(error as Error).message}`
       );

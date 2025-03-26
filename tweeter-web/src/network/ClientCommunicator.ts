@@ -12,6 +12,7 @@ export class ClientCommunicator {
     endpoint: string,
     headers?: Headers
   ): Promise<RES> {
+    console.log("ClientCommunicator: ")
     if (headers && req) {
       headers.append("Content-type", "application/json");
     } else if (req) {

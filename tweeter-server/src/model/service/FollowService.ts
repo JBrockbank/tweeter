@@ -8,6 +8,7 @@ export class FollowService {
     lastItem: UserDto | null
   ): Promise<[UserDto[], boolean]> {
     // TODO: Replace with the result of calling server
+    console.log("LastItem: " + lastItem);
     return this.getFakeData(lastItem, pageSize, userAlias);
   }
 
@@ -18,6 +19,8 @@ export class FollowService {
     lastItem: UserDto | null
   ): Promise<[UserDto[], boolean]> {
     // TODO: Replace with the result of calling server
+    console.log("LastItem: " + lastItem);
+    console.log("PageSize: " + pageSize);
     return this.getFakeData(lastItem, pageSize, userAlias);
   }
 
