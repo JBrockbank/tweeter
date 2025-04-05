@@ -1,9 +1,6 @@
 import { ServerFacade } from "../../src/network/ServerFacade";
 import "isomorphic-fetch";
 import {
-  GetCountRequest,
-  PagedItemRequest,
-  RegisterRequest,
   UserDto,
 } from "tweeter-shared";
 

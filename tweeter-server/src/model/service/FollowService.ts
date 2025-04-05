@@ -1,16 +1,61 @@
-import { AuthToken, User, FakeData, UserDto } from "tweeter-shared";
+import { AuthToken, User, UserDto } from "tweeter-shared";
+import { FollowDAO } from "../../database/dao/interfaces/FollowDAO";
+import { FactoryDAO } from "../../database/dao/factory/FactoryDAO";
+import { AuthTokenDAO } from "../../database/dao/interfaces/AuthTokenDAO";
+import { UserDAO } from "../../database/dao/interfaces/UserDAO";
 
 export class FollowService {
+  private factoryDAO: FactoryDAO;
+  private followDAO: FollowDAO;
+  private authTokenDAO: AuthTokenDAO;
+  private userDAO: UserDAO;
+
+  constructor(factoryDAO: FactoryDAO) {
+    this.factoryDAO = factoryDAO;
+    this.followDAO = factoryDAO.getFollowDAO();
+    this.authTokenDAO = factoryDAO.getAuthTokenDAO();
+    this.userDAO = factoryDAO.getUserDAO();
+  }
+
   public async loadMoreFollowers(
     token: string,
     userAlias: string,
     pageSize: number,
     lastItem: UserDto | null
   ): Promise<[UserDto[], boolean]> {
-    // TODO: Replace with the result of calling server
-    console.log("LastItem: " + lastItem);
-    return this.getFakeData(lastItem, pageSize, userAlias);
+    const currentUserAlias = await this.authTokenDAO.getAliasFromToken(token);
+  
+    if (!currentUserAlias) {
+      throw new Error("Unauthorized access - Bad AuthToken");
+    }
+  
+    const { followers, hasMore } = await this.followDAO.getFollowers(
+      userAlias,
+      pageSize,
+      lastItem
+    );
+  
+    // Fetch full UserDto for each alias
+    const userDtos = await Promise.all(
+      followers.map(async (follower) => {
+        try {
+          return await this.userDAO.getUser(follower); // Ensure it returns UserDto
+        } catch (error) {
+          console.error(`Failed to fetch user for alias ${follower}`, error);
+          return null;
+        }
+      })
+    );
+  
+    // Filter out null values and ensure type safety
+    const filteredUserDtos: UserDto[] = userDtos.filter(
+      (user): user is UserDto => user !== null
+    );
+  
+    return [filteredUserDtos, hasMore];
   }
+  
+  
 
   public async loadMoreFollowees(
     token: string,
@@ -18,54 +63,96 @@ export class FollowService {
     pageSize: number,
     lastItem: UserDto | null
   ): Promise<[UserDto[], boolean]> {
-    // TODO: Replace with the result of calling server
-    console.log("LastItem: " + lastItem);
-    console.log("PageSize: " + pageSize);
-    return this.getFakeData(lastItem, pageSize, userAlias);
+    const currentUserAlias = await this.authTokenDAO.getAliasFromToken(token);
+  
+    if (!currentUserAlias) {
+      throw new Error("Unauthorized access - Bad AuthToken");
+    }
+  
+    // Get followee aliases from followDAO
+    const { followees, hasMore } = await this.followDAO.getFollowees(
+      userAlias,
+      pageSize,
+      lastItem
+    );
+  
+    // Fetch full UserDto for each alias
+    const userDtos = await Promise.all(
+      followees.map(async (followee) => {
+        try {
+          return await this.userDAO.getUser(followee); // Ensure it returns UserDto
+        } catch (error) {
+          console.error(`Failed to fetch user for alias ${followee}`, error);
+          return null; // Return null on failure
+        }
+      })
+    );
+  
+    // Filter out null values and ensure type safety
+    const filteredUserDtos: UserDto[] = userDtos.filter(
+      (user): user is UserDto => user !== null
+    );
+  
+    return [filteredUserDtos, hasMore];
   }
-
-  private async getFakeData(lastItem: UserDto | null, pageSize: number, userAlias: string): Promise<[UserDto[], boolean]> {
-    const [items, hasMore] = FakeData.instance.getPageOfUsers(User.fromDto(lastItem), pageSize, userAlias);
-    const dtos = items.map((user) => user.dto);
-    return [dtos, hasMore];
-  }
+  
+  
 
   public async getIsFollowerStatus(
     token: string,
     user: UserDto,
     selectedUser: UserDto
   ): Promise<boolean> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    const currentUserAlias = await this.authTokenDAO.getAliasFromToken(token);
+
+    if (!currentUserAlias) {
+      throw new Error("Unauthorized access - Bad AuthToken");
+    }
+
+    return this.followDAO.getIsFollower(user.alias, selectedUser.alias);
   }
 
   public async getFolloweeCount(
     token: string,
     user: UserDto
   ): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    const currentUserAlias = await this.authTokenDAO.getAliasFromToken(token);
+
+    if (!currentUserAlias) {
+      throw new Error("Unauthorized access - Bad AuthToken");
+    }
+
+    return this.followDAO.getFolloweeCount(user.alias);
   }
 
   public async getFollowerCount(
     token: string,
     user: UserDto
   ): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
+    const currentUserAlias = await this.authTokenDAO.getAliasFromToken(token);
+
+    if (!currentUserAlias) {
+      throw new Error("Unauthorized access - Bad AuthToken");
+    }
+
+    return this.followDAO.getFollowerCount(user.alias);
   }
 
   public async follow(
     token: string,
     userToFollow: UserDto
-  ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the follow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+  ): Promise<[number, number]> {
+    const currentUserAlias = await this.authTokenDAO.getAliasFromToken(token);
+    if(!currentUserAlias){
+      throw new Error("Unable to get User from AuthToken");
+    }
+    await this.followDAO.follow(currentUserAlias, userToFollow.alias);
 
-    // TODO: Call the server
-
-    const followerCount = await this.getFollowerCount(token, userToFollow);
-    const followeeCount = await this.getFolloweeCount(token, userToFollow);
+    const followerCount = await this.followDAO.getFollowerCount(
+      userToFollow.alias
+    );
+    
+    const followeeCount = await this.followDAO.getFolloweeCount(userToFollow.alias);
 
     return [followerCount, followeeCount];
   }
@@ -73,23 +160,17 @@ export class FollowService {
   public async unfollow(
     token: string,
     userToUnfollow: UserDto
-  ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+  ): Promise<[number, number]> {
+    const currentUserAlias = await this.authTokenDAO.getAliasFromToken(token);
 
-    // TODO: Call the server
+    await this.followDAO.unfollow(currentUserAlias, userToUnfollow.alias);
 
-    const followerCount = await this.getFollowerCount(
-      token,
-      userToUnfollow
+    const followerCount = await this.followDAO.getFollowerCount(
+      userToUnfollow.alias
     );
-
-    const followeeCount = await this.getFolloweeCount(
-      token,
-      userToUnfollow
-    );
+    
+    const followeeCount = await this.followDAO.getFolloweeCount(currentUserAlias);
 
     return [followerCount, followeeCount];
   }
-
 }

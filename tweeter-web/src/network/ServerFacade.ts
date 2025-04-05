@@ -45,12 +45,16 @@ export class ServerFacade {
       PagedItemResponse<TResponseItem>
     >(request, endpoint);
 
+    console.log(`Response Items: ${response.items?.toString}`);
+
     const items: TOutputItem[] =
       response.successIndicator && response.items
         ? response.items
             .map(mapToOutputItem)
             .filter((item): item is TOutputItem => item !== null)
         : [];
+
+    console.log(`Response Items after mapping: ${items}`);
 
     if (response.successIndicator) {
       return [items, response.hasMore];
@@ -119,6 +123,7 @@ export class ServerFacade {
       pageSize,
       lastItem: lastItemDto,
     };
+    console.log("Getting more Story Items");
     return this.fetchPagedItems(req, "/statusItem/story", (dto: StatusDto) =>
       Status.fromDto(dto)
     );
@@ -133,6 +138,7 @@ export class ServerFacade {
     var lastItemDto: StatusDto | null = null;
     if(lastItem){
         lastItemDto = lastItem.dto;
+        console.log("Last Item: " + lastItem.user.alias)
     }
     const req: PagedItemRequest<StatusDto> = {
       authToken,
@@ -140,6 +146,7 @@ export class ServerFacade {
       pageSize,
       lastItem: lastItemDto,
     };
+    console.log("Getting more Feed Items");
     return this.fetchPagedItems(req, "/statusItem/feed", (dto: StatusDto) =>
       Status.fromDto(dto)
     );
@@ -252,6 +259,7 @@ export class ServerFacade {
     request: TRequest,
     endpoint: string
   ): Promise<[User, AuthToken]> {
+    console.log("Authenticating - Sending to the CC");
     const res = await this.clientCommunicator.doPost<TRequest, AuthResponse>(request, endpoint);
 
     if (res.successIndicator) {
@@ -282,6 +290,7 @@ export class ServerFacade {
     userImageBytes: string,
     imageFileExtension: string
   ): Promise<[User, AuthToken]> {
+    console.log("Registering ${alias}");
     const req: RegisterRequest = {
       authToken: "token",
       firstName,

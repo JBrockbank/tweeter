@@ -279,6 +279,7 @@ export class Status {
 
     public get dto(): StatusDto {
       return {
+        alias: this.user.alias,
         post: this.post,
         user: this.user.dto,
         timestamp: this.timestamp

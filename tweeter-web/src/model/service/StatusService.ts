@@ -20,6 +20,7 @@ export class StatusService {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
+    console.log("")
     return await this.serverFacade.getMoreStoryItems(authToken.token, userAlias, pageSize, lastItem);
   }
 

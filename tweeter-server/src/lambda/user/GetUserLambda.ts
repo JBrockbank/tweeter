@@ -1,9 +1,9 @@
 import { GetUserResponse } from "tweeter-shared";
 import { GetUserRequest } from "tweeter-shared";
-import { UserService } from "../../model/service/UserService";
+import { getUserService } from "../util";
 
 export const handler = async (request: GetUserRequest): Promise<GetUserResponse> => {
-    const userService = new UserService();
+    const userService = getUserService();
     const userDto = await userService.getUser(request.authToken, request.alias);
 
     return {

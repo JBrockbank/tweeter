@@ -1,7 +1,6 @@
 import "isomorphic-fetch";
 import { StatusService } from "../../src/model/service/StatusService";
 import { AuthToken } from "tweeter-shared";
-import { notNull } from "@typestrong/ts-mockito";
 
 describe("StatusService test", () => {
     const statusService = new StatusService();
