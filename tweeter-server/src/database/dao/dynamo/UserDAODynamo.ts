@@ -5,6 +5,7 @@ import { DynamoDAO } from "./DynamoDAO";
 export class UserDAODynamo extends DynamoDAO implements UserDAO {
   protected readonly tableName = "Users";
 
+  
   public async getUser(alias: string): Promise<UserDto | null> {
     const item = await this.getItem({ alias });
     if (!item) {
@@ -24,7 +25,9 @@ export class UserDAODynamo extends DynamoDAO implements UserDAO {
       firstName: user.firstName,
       lastName: user.lastName,
       imageUrl: user.imageUrl,
-      hashedPassword: hashedPassword
+      hashedPassword: hashedPassword,
+      followeeCount: 0,
+      followerCount: 0
     };
 
     await this.putItem(userItem);
@@ -37,4 +40,73 @@ export class UserDAODynamo extends DynamoDAO implements UserDAO {
     }
     return item.hashedPassword;
   }
+
+  public async getFolloweeCount(alias: string): Promise<number> {
+    const item = await this.getItem({alias});
+    if(!item){
+      throw new Error("User not found");
+    }
+    const count = item.followeeCount;
+    return count;
+  }
+
+  public async getFollowerCount(alias: string): Promise<number> {
+    const item = await this.getItem({alias});
+    if(!item){
+      throw new Error("User not found");
+    }
+    const count = item.followerCount;
+    return count;
+  }
+
+  public async updateFolloweeCount(alias: string, count: number): Promise<void> {
+    const user = await this.getItem({alias});
+    if(!user){
+      throw new Error("User not found");
+    }
+    const userItem = {
+      alias: user.alias,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      imageUrl: user.imageUrl,
+      hashedPassword: user.hashedPassword,
+      followeeCount: count,
+      followerCount: user.followerCount
+    };
+
+    try {
+      await this.putItem(userItem);
+    } catch (error) {
+      throw new Error(`Error updating follower count for user ${alias}: ${(error as Error).message}`);
+    }
+    
+
+  }
+
+  public async updateFollowerCount(alias: string, count: number): Promise<void> {
+    const user = await this.getItem({ alias });
+    
+    if (!user) {
+      throw new Error("User not found");
+    }
+  
+    const userItem = {
+      alias: user.alias,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      imageUrl: user.imageUrl,
+      hashedPassword: user.hashedPassword,
+      followeeCount: user.followeeCount,
+      followerCount: count, 
+    };
+  
+    try {
+      await this.putItem(userItem);
+    } catch (error) {
+      throw new Error(`Error updating follower count for user ${alias}: ${(error as Error).message}`);
+    }
+  }
+  
+
+
 }

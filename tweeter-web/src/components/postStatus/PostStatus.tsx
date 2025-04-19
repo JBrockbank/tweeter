@@ -5,24 +5,26 @@ import {
   PostStatusPresenter,
   PostStatusView,
 } from "../../presenters/PostStatusPresenter";
+import useToastListener from "../toaster/ToastListenerHook";
 
 interface Props {
   presenterGenerator: (view: PostStatusView) => PostStatusPresenter;
 }
 
 const PostStatus = (props: Props) => {
+  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
+    useToastListener();
+
   const { currentUser, authToken } = useUserInfo();
   const [post, setPost] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const listener: PostStatusView = {
+    setIsLoading: setIsLoading,
+    displayInfoMessage: displayInfoMessage,
+    clearLastInfoMessage: clearLastInfoMessage,
     setPost: setPost,
-    displayInfoMessage: (
-      message: string,
-      duration: number,
-      bootstrapClasses?: string
-    ) => {},
-    displayErrorMessage: (message: string, bootstrapClasses?: string) => {},
-    clearLastInfoMessage: () => {},
+    displayErrorMessage: displayErrorMessage,
   };
 
   const [presenter] = useState(props.presenterGenerator(listener));

@@ -1,10 +1,14 @@
 import { StatusDto, UserDto } from "tweeter-shared";
 import { FeedDAO } from "../interfaces/FeedDAO";
 import { DynamoDAO } from "./DynamoDAO";
-import { QueryCommand, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
+import { QueryCommand, BatchWriteCommand, BatchWriteCommandInput, BatchWriteCommandOutput } from "@aws-sdk/lib-dynamodb";
 
 export class FeedDAODynamo extends DynamoDAO implements FeedDAO {
   protected readonly tableName: string = "Feed";
+  readonly aliasAttr = "alias";
+  readonly timestampAttr = "timestamp";
+  readonly userAttr = "user";
+  readonly postAttr = "post";
 
   public async createFollowersFeed(
     user: UserDto,
@@ -83,6 +87,79 @@ export class FeedDAODynamo extends DynamoDAO implements FeedDAO {
           lastItem?.alias
         } : Error: ${(error as Error).message}`
       );
+    }
+  }
+
+
+  async batchPostFeed(userHandles: string[], status: StatusDto): Promise<void> {
+    const params = {
+      RequestItems: {
+        [this.tableName]: this.createPutFeedRequestItems(userHandles, status),
+      },
+    };
+    try {
+      console.log(params);
+      const resp = await this.client.send(new BatchWriteCommand(params));
+      // console.log(resp);
+      await this.putUnprocessedItems(resp, params);
+    } catch (err) {
+      throw new Error(
+        `Error while batch writing feeds with params: ${params}: \n${err}`
+      );
+    }
+  }
+
+  private createPutFeedRequestItems(userHandles: string[], status: StatusDto) {
+    return userHandles.map((userHandle) =>
+      this.createPutFeedRequest(userHandle, status)
+    );
+  }
+
+  private createPutFeedRequest(userHandle: string, status: StatusDto) {
+    const item = {
+      [this.aliasAttr]: userHandle,
+      [this.timestampAttr]: status.timestamp,
+      [this.postAttr]: status.post,
+      [this.userAttr]: status.user
+    };
+
+    return {
+      PutRequest: {
+        Item: item,
+      },
+    };
+  }
+  private async putUnprocessedItems(
+    resp: BatchWriteCommandOutput,
+    params: BatchWriteCommandInput
+  ) {
+    let delay = 10;
+    let attempts = 0;
+
+    while (
+      resp.UnprocessedItems !== undefined &&
+      Object.keys(resp.UnprocessedItems).length > 0
+    ) {
+      attempts++;
+
+      if (attempts > 1) {
+        // Pause before the next attempt
+        await new Promise((resolve) => setTimeout(resolve, delay));
+
+        // Increase pause time for next attempt
+        if (delay < 1000) {
+          delay += 100;
+        }
+      }
+
+      console.log(
+        `Attempt ${attempts}. Processing ${
+          Object.keys(resp.UnprocessedItems).length
+        } unprocessed feed items.`
+      );
+
+      params.RequestItems = resp.UnprocessedItems;
+      resp = await this.client.send(new BatchWriteCommand(params));
     }
   }
 }

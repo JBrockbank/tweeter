@@ -3,13 +3,18 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "./UserInfoHook";
-import { UserInfoPresenter } from "../../presenters/UserInfoPresenter";
+import { UserInfoPresenter, UserInfoView } from "../../presenters/UserInfoPresenter";
 import { MessageView } from "../../presenters/Presenter";
 interface Props {
-  presenterGenerator: (view: MessageView) => UserInfoPresenter;
+  presenterGenerator: (view: UserInfoView) => UserInfoPresenter;
 }
 
 const UserInfo = (props: Props) => {
+  const [isFollower, setIsFollower] = useState(false);
+  const [followeeCount, setFolloweeCount] = useState(-1);
+  const [followerCount, setFollowerCount] = useState(-1);
+  const [isLoading, setIsLoading] = useState(false);
+
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
@@ -26,9 +31,13 @@ const UserInfo = (props: Props) => {
     presenter.setNumbFollowers(authToken!, displayedUser!);
   }, [displayedUser]);
 
-  const listener: MessageView = {
-    displayErrorMessage: displayErrorMessage,
+  const listener: UserInfoView = {
+    setIsLoading: setIsLoading,
+    setIsFollower: setIsFollower,
+    setFolloweeCount: setFolloweeCount,
+    setFollowerCount: setFollowerCount,
     displayInfoMessage: displayInfoMessage,
+    displayErrorMessage: displayErrorMessage,
     clearLastInfoMessage: clearLastInfoMessage,
   };
 

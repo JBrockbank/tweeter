@@ -31,18 +31,18 @@ export class UserService {
     password: string
   ): Promise<[UserDto, AuthTokenDto]> {
     if (!alias || !password) {
-      throw new Error("Missing Alias or Password");
+      throw new Error("[Bad Request] Missing Alias or Password");
     }
 
     const retrievedUser = await this.userDAO.getUser(alias);
 
     if (!retrievedUser) {
-      throw new Error(`Error in retrieving user: ${alias}`);
+      throw new Error(`[Bad Request] User doesn't exist: ${alias}`);
     }
 
     const verified = await this.checkPassword(alias, password);
     if (!verified) {
-      throw new Error(`Bad Request: User/Password unable to find match: ${alias}, ${password}`);
+      throw new Error(`[Bad Request]: User/Password unable to find match: ${alias}, ${password}`);
     }
     const token = await this.startSession(retrievedUser);
     return [retrievedUser, token];
@@ -68,17 +68,15 @@ export class UserService {
     userImageBytes: string,
     imageFileExtension: string
   ): Promise<[UserDto, AuthTokenDto]> {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
-    // const imageStringBase64: string = Buffer.from(userImageBytes).toString("base64");
 
     if (await this.userDAO.getUser(alias)) {
-      throw new Error("Bad Request: User Alias is taken");
+      throw new Error("[Bad Request]: User Alias is taken");
     }
 
     const validExt = new Set(["jpg", "png", "jpeg"]);
     if (!validExt.has(imageFileExtension.toLowerCase())) {
       console.log(`img File Extension: ${imageFileExtension.toLowerCase()}`);
-      throw new Error("Bad Request: Invalid File Type");
+      throw new Error("[Bad Request]: Invalid File Type");
     }
 
     const hashedPassword = await bcrypt.hash(password, SALT);
@@ -118,8 +116,8 @@ export class UserService {
       const user = await this.userDAO.getUser(alias);   
       return user; 
     }
-    catch {
-      throw new Error("Unable to get User");
+    catch (error) {
+      throw new Error((error as Error).message);
     }
   }
 }

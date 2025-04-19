@@ -11,4 +11,5 @@ export interface FeedDAO {
     pageSize: number,
     lastItem?: StatusDto | null
   ): Promise<[StatusDto[], boolean]>;
+  batchPostFeed(userHandles: string[], status: StatusDto): Promise<void>;
 }

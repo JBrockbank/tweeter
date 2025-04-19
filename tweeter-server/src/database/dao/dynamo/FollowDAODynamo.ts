@@ -77,17 +77,21 @@ export class FollowDAODynamo extends DynamoDAO implements FollowDAO {
     followerAlias: string,
     followeeAlias: string
   ): Promise<boolean> {
-    const key = { followerAlias, followeeAlias };
-
+    const params = {
+      TableName: this.tableName,
+      KeyConditionExpression:
+        "followerAlias = :followerAlias AND followeeAlias = :followeeAlias",
+      ExpressionAttributeValues: {
+        ":followeeAlias": followeeAlias,
+        ":followerAlias": followerAlias,
+      },
+      Limit: 1,
+    };
     try {
-      const item = await this.getItem(key);
-      return !!item;
+      const response = await this.client.send(new QueryCommand(params));
+      return !!(response.Items && response.Items.length > 0);
     } catch (error) {
-      console.error(
-        `Error checking if ${followerAlias} follows ${followeeAlias}`,
-        error
-      );
-      throw new Error("Error checking follower relationship");
+      throw new Error("Error getting isFollower status");
     }
   }
 

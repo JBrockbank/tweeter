@@ -11,6 +11,8 @@ import { FeedDAODynamo } from "./FeedDAODynamo";
 import { StatusDAODynamo } from "./StatusDAODynamo";
 import { S3DAO } from "../interfaces/S3DAO";
 import { S3DAODynamo } from "./S3DAODynamo";
+import { SqsDAO } from "../interfaces/SQSDAO";
+import { SqsDAOAws } from "../sqs/SQSAWSDAO";
 
 export class FactoryDAODynamo implements FactoryDAO {
 
@@ -36,5 +38,9 @@ export class FactoryDAODynamo implements FactoryDAO {
     
       public getStatusDAO(): StatusDAO {
         return new StatusDAODynamo();
+      }
+
+      public getSqsDAO(): SqsDAO {
+        return new SqsDAOAws();
       }
 }
